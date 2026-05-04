@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FormatRestResponse{
     @Around("within(@org.springframework.web.bind.annotation.RestController *) " +
-            "&& !within(@org.springframework.web.bind.annotation.RestControllerAdvice *)")
+            "&& !within(@org.springframework.web.bind.annotation.RestControllerAdvice *) " +
+            "&& !within(com.doan.cv.controller.AuthController)")
     public Object formatResponse(ProceedingJoinPoint joinPoint) throws Throwable {
         ResponseEntity<?> result = (ResponseEntity<?>) joinPoint.proceed();
 
