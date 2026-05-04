@@ -1,4 +1,4 @@
-package com.doan.cv.Entity;
+package com.doan.cv.entity;
 
 import jakarta.persistence.*;
 

@@ -1,7 +1,7 @@
-package com.doan.cv.Service;
+package com.doan.cv.service.userdetailservice;
 
-import com.doan.cv.Entity.User;
-import com.doan.cv.Repository.UserRepository;
+import com.doan.cv.entity.User;
+import com.doan.cv.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,5 +28,4 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .authorities("ROLE_USER")
                 .build();
     }
-
 }

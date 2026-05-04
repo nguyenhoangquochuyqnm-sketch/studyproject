@@ -1,8 +1,7 @@
-package com.doan.cv.Repository;
+package com.doan.cv.repository;
 
-import com.doan.cv.Entity.User;
+import com.doan.cv.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

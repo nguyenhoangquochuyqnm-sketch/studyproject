@@ -1,10 +1,10 @@
-package com.doan.cv.Entity;
+package com.doan.cv.entity;
 
 public class RestResponse<T> {
     private Integer statusCode;
     private String error;
 
-    private Object message;
+    private String message;
     private T data;
 
     public RestResponse() {
@@ -18,7 +18,7 @@ public class RestResponse<T> {
         return error;
     }
 
-    public Object getMessage() {
+    public String getMessage() {
         return message;
     }
 
@@ -34,7 +34,7 @@ public class RestResponse<T> {
         this.error = error;
     }
 
-    public void setMessage(Object message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 

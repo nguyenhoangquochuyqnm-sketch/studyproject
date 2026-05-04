@@ -1,8 +1,10 @@
-package com.doan.cv.Controller;
+package com.doan.cv.controller;
 
 
-import com.doan.cv.Entity.User;
-import com.doan.cv.Service.UserService;
+import com.doan.cv.dto.request.UserRequest;
+import com.doan.cv.dto.response.UserResponse;
+import com.doan.cv.entity.User;
+import com.doan.cv.service.UserService;
 import com.doan.cv.error.InvalidValueException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,23 +21,22 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserResponse>> getAllUsers(){
         return ResponseEntity.ok().body(userService.getALlUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id){
-        throw new InvalidValueException("DJT CON DI ME MAY");
-        //return ResponseEntity.ok().body(userService.getUserById(id));
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id){
+        return ResponseEntity.ok().body(userService.getUserById(id));
     }
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest){
+        return ResponseEntity.ok(userService.createUser(userRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user){
-        User updatedUser = userService.updateUser(id, user);
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest userRequest){
+        UserResponse updatedUser = userService.updateUser(id, userRequest);
         return ResponseEntity.ok(updatedUser);
     }
 

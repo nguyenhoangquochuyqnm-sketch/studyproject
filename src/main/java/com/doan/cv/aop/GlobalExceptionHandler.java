@@ -1,6 +1,6 @@
-package com.doan.cv.AOP;
+package com.doan.cv.aop;
 
-import com.doan.cv.Entity.RestResponse;
+import com.doan.cv.entity.RestResponse;
 import com.doan.cv.error.InvalidValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

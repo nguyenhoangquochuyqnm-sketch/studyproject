@@ -1,4 +1,4 @@
-package com.doan.cv.Config;
+package com.doan.cv.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
