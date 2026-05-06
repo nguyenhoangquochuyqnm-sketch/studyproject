@@ -1,4 +1,4 @@
-package com.doan.cv.service.userdetailservice;
+package com.doan.cv.service;
 
 import com.doan.cv.entity.User;
 import com.doan.cv.repository.UserRepository;

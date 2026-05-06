@@ -1,4 +1,4 @@
-package com.doan.cv.util.mapper;
+package com.doan.cv.util;
 
 import com.doan.cv.dto.request.UserRequest;
 import com.doan.cv.dto.response.UserResponse;

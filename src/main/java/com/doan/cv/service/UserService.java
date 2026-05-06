@@ -4,7 +4,7 @@ import com.doan.cv.dto.request.UserRequest;
 import com.doan.cv.dto.response.UserResponse;
 import com.doan.cv.entity.User;
 import com.doan.cv.repository.UserRepository;
-import com.doan.cv.util.mapper.UserMapper;
+import com.doan.cv.util.UserMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
