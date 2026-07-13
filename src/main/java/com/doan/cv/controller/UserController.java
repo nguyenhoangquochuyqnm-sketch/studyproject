@@ -6,6 +6,7 @@ import com.doan.cv.dto.response.UserResponse;
 import com.doan.cv.entity.User;
 import com.doan.cv.service.UserService;
 import com.doan.cv.error.InvalidValueException;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserById(id));
     }
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest userRequest){
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest){
         return ResponseEntity.ok(userService.createUser(userRequest));
     }
 

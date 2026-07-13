@@ -2,7 +2,9 @@ package com.doan.cv.controller;
 
 import com.doan.cv.dto.request.UserRequest;
 import com.doan.cv.util.JWTutil;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +20,13 @@ public class AuthController {
     @Autowired
     JWTutil jwtutil;
 
-    @PostMapping
-    public String generateToken(@RequestBody UserRequest userRequest) throws Exception{
+    @PostMapping("/login")
+    public ResponseEntity<String> generateToken(@RequestBody @Valid UserRequest userRequest){
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(userRequest.getName(),userRequest.getPassword()));
 
-        return jwtutil.generateToken(userRequest.getName());
+        String token = jwtutil.generateToken(userRequest.getName());
+        return ResponseEntity.ok(token);
     }
 
 }

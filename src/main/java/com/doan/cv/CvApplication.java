@@ -17,28 +17,4 @@ public class CvApplication {
 		SpringApplication.run(CvApplication.class, args);
 	}
 
-//	@Bean
-//	public CommandLineRunner seedUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-//		return args -> {
-//			if (userRepository.count() == 0) {
-//				User admin = new User();
-//				admin.setName("admin");
-//				admin.setEmail("admin@gmail.com");
-//				admin.setPassword(passwordEncoder.encode("12345"));
-//
-//				User regular = new User();
-//				regular.setName("huy");
-//				regular.setEmail("huy@gmail.com");
-//				regular.setPassword(passwordEncoder.encode("12345"));
-//
-//				User Hanh = new User();
-//				Hanh.setName("hanh");
-//				Hanh.setEmail("hanh@gmail.com");
-//				Hanh.setPassword(passwordEncoder.encode("12345"));
-//
-//				userRepository.saveAll(List.of(admin, regular, Hanh));
-//				System.out.println("Seeded initial users.");
-//			}
-//		};
-//	}
 }

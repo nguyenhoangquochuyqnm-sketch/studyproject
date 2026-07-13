@@ -20,7 +20,7 @@ public class JWTutil {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
     }
 
@@ -43,7 +43,7 @@ public class JWTutil {
     }
 
     public boolean validateToken(String username, UserDetails userDetails, String token){
-        return username.equals(userDetails.getUsername()) && isTokenExpired(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
 
