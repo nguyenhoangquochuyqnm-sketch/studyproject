@@ -1,11 +1,10 @@
 package com.doan.cv.controller;
 
 
-import com.doan.cv.dto.request.UserRequest;
+import com.doan.cv.dto.request.UserCreateRequest;
+import com.doan.cv.dto.request.UserUpdateRequest;
 import com.doan.cv.dto.response.UserResponse;
-import com.doan.cv.entity.User;
 import com.doan.cv.service.UserService;
-import com.doan.cv.error.InvalidValueException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +30,13 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserById(id));
     }
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest){
-        return ResponseEntity.ok(userService.createUser(userRequest));
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserCreateRequest userCreateRequest){
+        return ResponseEntity.ok(userService.createUser(userCreateRequest));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest userRequest){
-        UserResponse updatedUser = userService.updateUser(id, userRequest);
+    @PutMapping
+    public ResponseEntity<UserResponse> updateUser(@RequestBody @Valid UserUpdateRequest userUpdateRequest){
+        UserResponse updatedUser = userService.updateUser(userUpdateRequest);
         return ResponseEntity.ok(updatedUser);
     }
 

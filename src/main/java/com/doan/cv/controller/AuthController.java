@@ -1,6 +1,6 @@
 package com.doan.cv.controller;
 
-import com.doan.cv.dto.request.UserRequest;
+import com.doan.cv.dto.request.UserLoginRequest;
 import com.doan.cv.util.JWTutil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +21,11 @@ public class AuthController {
     JWTutil jwtutil;
 
     @PostMapping("/login")
-    public ResponseEntity<String> generateToken(@RequestBody @Valid UserRequest userRequest){
+    public ResponseEntity<String> generateToken(@RequestBody @Valid UserLoginRequest userLoginRequest){
         authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(userRequest.getName(),userRequest.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword()));
 
-        String token = jwtutil.generateToken(userRequest.getName());
+        String token = jwtutil.generateToken(userLoginRequest.getEmail());
         return ResponseEntity.ok(token);
     }
 

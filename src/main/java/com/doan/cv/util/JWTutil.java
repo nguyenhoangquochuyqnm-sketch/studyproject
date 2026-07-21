@@ -24,12 +24,12 @@ public class JWTutil {
                 .getBody();
     }
 
-    public String generateToken(String username){
+    public String generateToken(String email){
         return Jwts
                 .builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis()+1000*3600))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 365))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -42,8 +42,8 @@ public class JWTutil {
         return getTokenBody(token).getExpiration().before( new Date());
     }
 
-    public boolean validateToken(String username, UserDetails userDetails, String token){
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    public boolean validateToken(String email, UserDetails userDetails, String token){
+        return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
 

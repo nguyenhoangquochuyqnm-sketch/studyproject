@@ -1,39 +1,20 @@
 package com.doan.cv.dto.response;
 
+import com.doan.cv.constant.Gender;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserResponse {
     private Long userId;
     private String name;
     private String email;
-
-    public UserResponse() {}
-
-    public UserResponse(Long userId, String email, String name) {
-        this.userId = userId;
-        this.email = email;
-        this.name = name;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    private int age;
+    private Gender gender;
+    private String address;
 }
