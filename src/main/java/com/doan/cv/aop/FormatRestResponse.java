@@ -23,6 +23,9 @@ public class FormatRestResponse{
         response.setMessage("SUCCESS");
         response.setStatusCode(result.getStatusCode().value());
 
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+        return ResponseEntity
+                .status(response.getStatusCode())
+                .headers(result.getHeaders())
+                .body(response);
     }
 }

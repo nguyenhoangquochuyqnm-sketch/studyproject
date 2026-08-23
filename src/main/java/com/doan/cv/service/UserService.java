@@ -8,6 +8,8 @@ import com.doan.cv.error.DuplicateValueException;
 import com.doan.cv.error.InvalidValueException;
 import com.doan.cv.repository.UserRepository;
 import com.doan.cv.mapper.UserMapper;
+import com.doan.cv.util.JWTUtil;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +17,13 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final JWTUtil jwtUtil;
     private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, JWTUtil jwtUtil) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.jwtUtil = jwtUtil;
     }
 
 
@@ -66,5 +70,45 @@ public class UserService {
             throw new InvalidValueException("USER NOT FOUND WITH ID: "+id);
 
         userRepository.deleteById(id);
+    }
+
+    public String updateUserRefreshToken(String email){
+        User currentUser = this.userRepository
+                               .findByEmail(email)
+                               .orElseThrow(() -> new InvalidValueException("This Email: " + email + " does not exists"));
+
+        String refreshToken = this.jwtUtil.generateRefreshToken(email, this.userMapper.toResponse(currentUser));
+
+        currentUser.setRefreshToken(refreshToken);
+        this.userRepository.save(currentUser);
+
+        return refreshToken;
+    }
+
+    public UserResponse getCurrentUserLogin(){
+        String email = jwtUtil.getCurrentUserLogin();
+
+        User currentUser = this.userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new InvalidValueException("This Email: " + email + " does not exists"));
+
+        return this.userMapper.toResponse(currentUser);
+    }
+
+    public boolean validateUserRefreshToken(String email, String refreshToken) {
+        User user = this.userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("EMAIL NOT FOUND"));
+
+        return user.getRefreshToken() != null && user.getRefreshToken().equals(refreshToken);
+    }
+
+    public void logoutUser() {
+        String email = this.jwtUtil.getCurrentUserLogin();
+
+        User currentUser = this.userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new InvalidValueException("This Email: " + email + " does not exists"));
+
+        currentUser.setRefreshToken(null);
     }
 }

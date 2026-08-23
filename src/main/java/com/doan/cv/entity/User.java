@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-
 @Entity
 @Table(name = "user")
 @Getter
@@ -27,9 +25,9 @@ public class User {
     private Gender gender;
     private String address;
 
+    @Column(columnDefinition = "TEXT")
     private String refreshToken;
-    private Instant createdAt;
-    private Instant updatedAt;
+
     private String createdBy;
     private String updateBy;
 }

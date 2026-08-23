@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -59,5 +60,16 @@ public class GlobalExceptionHandler {
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
 
         return ResponseEntity.badRequest().body(res);
+    }
+
+    @ExceptionHandler(value = MissingRequestCookieException.class)
+    public ResponseEntity<RestResponse<Void>> MissingRequestCookieExceptionHandler(MissingRequestCookieException e){
+        RestResponse<Void> response = new RestResponse<>();
+
+        response.setMessage("Missing required cookie");
+        response.setError(e.getMessage());
+        response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+
+        return ResponseEntity.badRequest().body(response);
     }
 }
