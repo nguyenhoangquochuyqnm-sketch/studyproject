@@ -1,5 +1,6 @@
 package com.doan.cv.controller;
 
+import com.doan.cv.annotation.APImessage;
 import com.doan.cv.dto.request.UserLoginRequest;
 import com.doan.cv.dto.response.UserResponse;
 import com.doan.cv.entity.User;
@@ -28,6 +29,7 @@ public class AuthController {
     UserService userService;
 
     @PostMapping("/login")
+    @APImessage("login successfully")
     public ResponseEntity<String> generateToken(@RequestBody @Valid UserLoginRequest userLoginRequest){
         authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword()));
@@ -45,6 +47,7 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
+    @APImessage("get refresh token")
     public ResponseEntity<String> getRefreshToken(@CookieValue(value = "refresh_token") String refreshToken) throws InvalidValueException {
         String email = this.jwtutil.extractUsername(refreshToken);
 
@@ -64,11 +67,13 @@ public class AuthController {
     }
 
     @GetMapping("/account")
+    @APImessage("fetch account")
     public ResponseEntity<UserResponse> getUserAccount(){
         return ResponseEntity.ok(this.userService.getCurrentUserLogin());
     }
 
     @PostMapping("/logout")
+    @APImessage("logout successfully")
     public ResponseEntity<Void> logOut(){
 
         this.userService.logoutUser();

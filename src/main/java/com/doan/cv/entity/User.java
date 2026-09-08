@@ -2,6 +2,7 @@ package com.doan.cv.entity;
 
 import com.doan.cv.constant.Gender;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

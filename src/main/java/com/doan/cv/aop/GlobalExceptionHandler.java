@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
         RestResponse<Map<String, String>> res = new RestResponse<>();
 
         res.setMessage("Validation failed");
-        res.setError(e.getMessage());
+        res.setError("missing required argument");
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
 
         Map<String, String> errorMap = new HashMap<>();
