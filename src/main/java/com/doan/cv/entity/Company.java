@@ -1,6 +1,7 @@
 package com.doan.cv.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "companies")
@@ -21,7 +23,7 @@ import java.time.Instant;
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long companyId;
 
     @NotBlank(message = "name can not be blank")
     private String name;
@@ -37,10 +39,18 @@ public class Company {
     private String createdBy;
     private String updatedBy;
 
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<User> users;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Job> jobs;
+
     @PrePersist
     void handleCreatedAt(){
         this.createdAt = Instant.now();
-        Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication();
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
         String creator = principal.getName();
         this.setCreatedBy(creator);
     }

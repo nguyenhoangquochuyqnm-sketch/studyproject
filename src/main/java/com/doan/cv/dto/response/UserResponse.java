@@ -17,4 +17,5 @@ public class UserResponse {
     private int age;
     private Gender gender;
     private String address;
+    private String company;
 }

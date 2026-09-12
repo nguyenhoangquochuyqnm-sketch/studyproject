@@ -23,8 +23,11 @@ public class UserUpdateRequest {
     private Gender gender;
 
     @Min(value = 0, message = "Age must be a positive number")
-    private int age;
+    private Integer age;
 
     @NotBlank(message = "Address cannot be blank")
     private String address;
+
+    @NotBlank(message = "Company ID is required")
+    private Long companyId;
 }

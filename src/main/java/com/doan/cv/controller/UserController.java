@@ -28,7 +28,7 @@ public class UserController {
     @GetMapping
     @APImessage("fetch all users")
     public ResponseEntity<ResultPagination<List<UserResponse>>> getAllUsers(@RequestParam(name = "current", defaultValue = "1") int currentPage,
-                                                        @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+                                                                            @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
         if(currentPage < 1)
             currentPage = 1;
         if (pageSize < 1 || pageSize > 100)

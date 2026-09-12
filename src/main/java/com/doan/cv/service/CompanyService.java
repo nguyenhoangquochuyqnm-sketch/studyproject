@@ -3,13 +3,14 @@ package com.doan.cv.service;
 
 import com.doan.cv.dto.response.ResultPagination;
 import com.doan.cv.entity.Company;
+import com.doan.cv.entity.User;
 import com.doan.cv.error.IdNotFoundException;
 import com.doan.cv.error.InvalidValueException;
 import com.doan.cv.repository.CompanyRepository;
-import jakarta.validation.Valid;
+import com.doan.cv.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +18,11 @@ import java.util.List;
 @Service
 public class CompanyService {
 
-    private final CompanyRepository companyRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public CompanyService(CompanyRepository companyRepository){
-        this.companyRepository = companyRepository;
-    }
     public ResultPagination<List<Company>> getAllCompanies(Pageable pageable) {
         Page<Company> companyPage = this.companyRepository.findAll(pageable);
 
@@ -42,10 +43,9 @@ public class CompanyService {
     }
 
     public Company getCompanyById(Long id) {
-        Company currentCompany = this.companyRepository.findById(id)
-                                                       .orElseThrow(() -> new InvalidValueException("Company not existed with ID: "+id));
+        return this.companyRepository.findById(id)
+                   .orElseThrow(() -> new InvalidValueException("Company not existed with ID: "+id));
 
-        return currentCompany;
     }
 
     public Company createCompany(Company company) {
@@ -53,8 +53,8 @@ public class CompanyService {
     }
 
     public Company updateCompany(Company company) {
-        Company existingCompany = this.companyRepository.findById(company.getId())
-                                                        .orElseThrow(() -> new IdNotFoundException("company not found with ID: "+company.getId()));
+        Company existingCompany = this.companyRepository.findById(company.getCompanyId())
+                                                        .orElseThrow(() -> new IdNotFoundException("company not found with ID: "+company.getCompanyId()));
 
         existingCompany.setName(company.getName());
         existingCompany.setDescription(company.getDescription());
@@ -66,8 +66,11 @@ public class CompanyService {
 
 
     public void deleteCompany(Long id) {
-        if(!this.companyRepository.existsById(id))
-            throw new IdNotFoundException("company not found with ID: "+id);
+        Company existingCompany = this.companyRepository.findById(id)
+                                                        .orElseThrow(() -> new IdNotFoundException("company not found with ID: "+id));
+
+        List<User> users = this.userRepository.findByCompany(existingCompany);
+        this.userRepository.deleteAll(users);
 
         this.companyRepository.deleteById(id);
     }

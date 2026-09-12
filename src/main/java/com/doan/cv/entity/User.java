@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.security.Principal;
 
 @Entity
 @Table(name = "user")
@@ -31,4 +35,17 @@ public class User {
 
     private String createdBy;
     private String updateBy;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @PrePersist
+    void handleCreatedAt(){
+        this.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+    @PreUpdate
+    void handleUpdatedAt(){
+        this.setUpdateBy(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
 }

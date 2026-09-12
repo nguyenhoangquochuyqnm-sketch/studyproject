@@ -27,11 +27,13 @@ public class UserCreateRequest {
     private String password;
 
     @Min(value = 0, message = "Age must be a positive number")
-    private int age;
+    private Integer age;
 
     @NotNull(message = "Gender cannot be null")
     private Gender gender;
 
     @NotBlank(message = "Address cannot be blank")
     private String address;
+
+    private Long companyId;
 }
