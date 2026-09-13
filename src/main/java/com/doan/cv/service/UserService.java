@@ -128,6 +128,7 @@ public class UserService {
                 .orElseThrow(() -> new InvalidValueException("This Email: " + email + " does not exists"));
 
         currentUser.setRefreshToken(null);
+
         this.userRepository.save(currentUser);
     }
 }

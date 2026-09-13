@@ -47,7 +47,6 @@ public class Job {
     private Company company;
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonIgnore
     private List<JobSkill> jobSkills = new ArrayList<>();
 
     @PrePersist

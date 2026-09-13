@@ -12,11 +12,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
-
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     @Autowired
-    CompanyRepository companyRepository;
+    private CompanyRepository companyRepository;
 
     public User createToEntity(UserCreateRequest userCreateRequest) {
         User user = new User();
