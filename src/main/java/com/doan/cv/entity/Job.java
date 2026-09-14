@@ -29,6 +29,8 @@ public class Job {
     private String location;
     private Long salary;
     private Integer quantity;
+
+    @Enumerated(EnumType.STRING)
     private JobLevel level;
 
     @Column(columnDefinition = "MEDIUMTEXT")

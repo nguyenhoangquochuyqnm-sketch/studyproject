@@ -69,7 +69,7 @@ public class JobMapper {
                                                                                                                                .job(job)
                                                                                                                                .skill(s)
                                                                                                                                .build())
-                                                                                                              .collect(Collectors.toList());
+                                                                                                                   .collect(Collectors.toList());
         job.setJobSkills(jobSkillList);
 
         return job;
