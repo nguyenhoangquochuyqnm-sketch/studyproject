@@ -28,6 +28,6 @@ public class UserUpdateRequest {
     @NotBlank(message = "Address cannot be blank")
     private String address;
 
-    @NotBlank(message = "Company ID is required")
     private Long companyId;
+    private Long roleId;
 }

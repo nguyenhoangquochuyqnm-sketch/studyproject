@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +28,7 @@ public class Role {
     private String name;
 
     private String description;
-    private boolean active;
+    private Boolean active;
 
     private Instant createdAt;
     private Instant updatedAt;
@@ -40,7 +42,7 @@ public class Role {
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private List<Permission> permissions;
+    private List<Permission> permissions = new ArrayList<>();
 
     @PrePersist
     void handleCreate() {

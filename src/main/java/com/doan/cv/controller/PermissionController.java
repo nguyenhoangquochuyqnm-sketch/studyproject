@@ -53,10 +53,10 @@ public class PermissionController {
         return ResponseEntity.ok(permissionService.updatePermission(id, request));
     }
 
-//    @DeleteMapping("/{id}")
-//    @APImessage("delete permission")
-//    public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
-//        permissionService.deletePermission(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/{id}")
+    @APImessage("delete permission")
+    public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
+        permissionService.deletePermission(id);
+        return ResponseEntity.noContent().build();
+    }
 }

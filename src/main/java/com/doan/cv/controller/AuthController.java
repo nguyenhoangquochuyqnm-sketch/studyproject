@@ -1,15 +1,16 @@
 package com.doan.cv.controller;
 
 import com.doan.cv.annotation.APImessage;
+import com.doan.cv.dto.request.UserCreateRequest;
 import com.doan.cv.dto.request.UserLoginRequest;
+import com.doan.cv.dto.response.AuthResponse;
 import com.doan.cv.dto.response.UserResponse;
-import com.doan.cv.entity.User;
 import com.doan.cv.error.InvalidValueException;
 import com.doan.cv.service.UserService;
-import com.doan.cv.util.JWTUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,47 +24,39 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    JWTUtil jwtutil;
-
-    @Autowired
     UserService userService;
+
+    @PostMapping("/register")
+    @APImessage("create a new account")
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserCreateRequest userCreateRequest){
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userService.createUser(userCreateRequest));
+    }
 
     @PostMapping("/login")
     @APImessage("login successfully")
-    public ResponseEntity<String> generateToken(@RequestBody @Valid UserLoginRequest userLoginRequest){
-        authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword()));
+    public ResponseEntity<AuthResponse> generateToken(@RequestBody @Valid UserLoginRequest userLoginRequest){
 
-        String accessToken = jwtutil.generateAccessToken(userLoginRequest.getEmail());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginRequest.getEmail(), userLoginRequest.getPassword()));
+
         String refreshToken = this.userService.updateUserRefreshToken(userLoginRequest.getEmail());
 
-        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken)
-                                                      .httpOnly(true)
-                                                      .maxAge(6000)
-                                                      .path("/")
-                                                      .build();
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(accessToken);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, AuthController.getCookie(refreshToken))
+                .body(this.userService.generateAuthResponse(userLoginRequest.getEmail()));
     }
 
     @GetMapping("/refresh")
     @APImessage("get refresh token")
-    public ResponseEntity<String> getRefreshToken(@CookieValue(value = "refresh_token") String refreshToken) throws InvalidValueException {
-        String email = this.jwtutil.extractUsername(refreshToken);
+    public ResponseEntity<AuthResponse> getRefreshToken(@CookieValue(value = "refresh_token") String refreshToken) throws InvalidValueException {
+        String email = this.userService.validateUserRefreshToken(refreshToken);
 
-        if(!this.userService.validateUserRefreshToken(email, refreshToken))
-            throw new InvalidValueException("Invalid refreshToken (expired refresh token)");
-
-        String accessToken = jwtutil.generateAccessToken(email);
         String newRefreshToken = this.userService.updateUserRefreshToken(email);
 
-        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", newRefreshToken)
-                .httpOnly(true)
-                .maxAge(6000)
-                .path("/")
-                .build();
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(accessToken);
+        return ResponseEntity.ok()
+                             .header(HttpHeaders.SET_COOKIE, AuthController.getCookie(newRefreshToken))
+                             .body(this.userService.generateAuthResponse(email));
     }
 
     @GetMapping("/account")
@@ -75,16 +68,19 @@ public class AuthController {
     @PostMapping("/logout")
     @APImessage("logout successfully")
     public ResponseEntity<Void> logOut(){
-
         this.userService.logoutUser();
+        return ResponseEntity.ok()
+                             .header(HttpHeaders.SET_COOKIE, AuthController.getCookie(null))
+                             .build();
+    }
 
-        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", null)
+    private static String getCookie(String cookieValue) {
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", cookieValue)
                 .httpOnly(true)
                 .maxAge(0)
                 .secure(true)
                 .path("/")
                 .build();
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).build();
+        return responseCookie.toString();
     }
 }

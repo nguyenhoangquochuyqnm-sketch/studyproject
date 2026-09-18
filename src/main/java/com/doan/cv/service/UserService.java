@@ -2,6 +2,7 @@ package com.doan.cv.service;
 
 import com.doan.cv.dto.request.UserCreateRequest;
 import com.doan.cv.dto.request.UserUpdateRequest;
+import com.doan.cv.dto.response.AuthResponse;
 import com.doan.cv.dto.response.ResultPagination;
 import com.doan.cv.dto.response.UserResponse;
 import com.doan.cv.entity.User;
@@ -10,6 +11,8 @@ import com.doan.cv.error.InvalidValueException;
 import com.doan.cv.repository.UserRepository;
 import com.doan.cv.mapper.UserMapper;
 import com.doan.cv.util.JWTUtil;
+import jakarta.validation.constraints.Email;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,16 +22,12 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
-    private final JWTUtil jwtUtil;
-    private final UserMapper userMapper;
-
-    public UserService(UserRepository userRepository, UserMapper userMapper, JWTUtil jwtUtil) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.jwtUtil = jwtUtil;
-    }
-
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private JWTUtil jwtUtil;
+    @Autowired
+    private UserMapper userMapper;
 
     public ResultPagination<List<UserResponse>> getAllUsers(Pageable pageable){
         Page<User> userPage = this.userRepository.findAll(pageable);
@@ -91,9 +90,8 @@ public class UserService {
     }
 
     public String updateUserRefreshToken(String email){
-        User currentUser = this.userRepository
-                               .findByEmail(email)
-                               .orElseThrow(() -> new InvalidValueException("This Email: " + email + " does not exists"));
+        User currentUser = this.userRepository.findByEmail(email)
+                                              .orElseThrow(() -> new InvalidValueException("This Email: " + email + " does not exists"));
 
         String refreshToken = this.jwtUtil.generateRefreshToken(email, this.userMapper.toResponse(currentUser));
 
@@ -113,22 +111,33 @@ public class UserService {
         return this.userMapper.toResponse(currentUser);
     }
 
-    public boolean validateUserRefreshToken(String email, String refreshToken) {
-        User user = this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("EMAIL NOT FOUND"));
+    public String validateUserRefreshToken(String refreshToken) {
+        String email = this.jwtUtil.extractUsername(refreshToken);
 
-        return user.getRefreshToken() != null && user.getRefreshToken().equals(refreshToken);
+        User user = this.userRepository.findByEmail(email)
+                                       .orElseThrow(() -> new UsernameNotFoundException("EMAIL NOT FOUND"));
+
+        if(user.getRefreshToken() == null || !user.getRefreshToken().equals(refreshToken))
+            throw new InvalidValueException("Invalid refreshToken (expired refresh token)");
+
+        return email;
     }
 
     public void logoutUser() {
         String email = this.jwtUtil.getCurrentUserLogin();
 
-        User currentUser = this.userRepository
-                .findByEmail(email)
-                .orElseThrow(() -> new InvalidValueException("This Email: " + email + " does not exists"));
+        User currentUser = this.userRepository.findByEmail(email)
+                                              .orElseThrow(() -> new InvalidValueException("This Email: " + email + " does not exists"));
 
         currentUser.setRefreshToken(null);
 
         this.userRepository.save(currentUser);
+    }
+
+    public AuthResponse generateAuthResponse(String email) {
+        String accessToken = this.jwtUtil.generateAccessToken(email);
+        UserResponse userResponse = this.userMapper.toResponse(this.userRepository.findByEmail(email)
+                                                                                  .orElseThrow(() -> new UsernameNotFoundException("EMAIL NOT FOUND")));
+        return new AuthResponse(accessToken,userResponse);
     }
 }

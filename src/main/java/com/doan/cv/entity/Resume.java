@@ -11,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.Instant;
 
 @Entity
-@Table(name = "resume")
+@Table(name = "resumes")
 @Getter
 @Setter
 @NoArgsConstructor

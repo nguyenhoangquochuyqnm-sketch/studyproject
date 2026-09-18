@@ -35,5 +35,7 @@ public class UserCreateRequest {
     @NotBlank(message = "Address cannot be blank")
     private String address;
 
+    private Long roleId;
+
     private Long companyId;
 }

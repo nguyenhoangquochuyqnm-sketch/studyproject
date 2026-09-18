@@ -6,6 +6,7 @@ import com.doan.cv.dto.response.UserResponse;
 import com.doan.cv.entity.User;
 import com.doan.cv.error.IdNotFoundException;
 import com.doan.cv.repository.CompanyRepository;
+import com.doan.cv.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,8 @@ public class UserMapper {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     public User createToEntity(UserCreateRequest userCreateRequest) {
         User user = new User();
@@ -23,6 +26,9 @@ public class UserMapper {
         user.setCompany(userCreateRequest.getCompanyId() != null ? this.companyRepository.findById(userCreateRequest.getCompanyId())
                                                                                          .orElseThrow(() -> new IdNotFoundException("company not found: ID: "+userCreateRequest.getCompanyId()))
                                                                  : null);
+        user.setRole(userCreateRequest.getRoleId() != null ? this.roleRepository.findById(userCreateRequest.getRoleId())
+                                                                                .orElseThrow(() -> new IdNotFoundException("Role not found: ID: "+userCreateRequest.getRoleId()))
+                                                           : null);
         user.setName(userCreateRequest.getName());
         user.setEmail(userCreateRequest.getEmail());
         user.setPassword(this.passwordEncoder.encode(userCreateRequest.getPassword()));
@@ -42,8 +48,8 @@ public class UserMapper {
         response.setAge(user.getAge());
         response.setAddress(user.getAddress());
         response.setGender(user.getGender());
-        response.setCompany(user.getCompany() != null ? user.getCompany().getName() : null);
-
+        response.setCompanyName(user.getCompany() != null ? user.getCompany().getName() : null);
+        response.setUserRole(user.getRole()!=null ? new UserResponse.UserRole(user.getRole().getRoleId(), user.getRole().getName()) : null);
         return response;
     }
 
@@ -51,6 +57,10 @@ public class UserMapper {
         target.setCompany(source.getCompanyId() != null ? this.companyRepository.findById(source.getCompanyId())
                                                                                 .orElseThrow(() -> new IdNotFoundException("company not found: ID: "+source.getCompanyId()))
                                                         : null);
+
+        target.setRole(source.getRoleId() != null ? this.roleRepository.findById(source.getRoleId())
+                                                                       .orElseThrow(() -> new IdNotFoundException("Role not found: ID: "+source.getRoleId()))
+                                                  : null);
         target.setName(source.getName());
         target.setAge(source.getAge());
         target.setAddress(source.getAddress());

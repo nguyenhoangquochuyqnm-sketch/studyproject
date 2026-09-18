@@ -1,5 +1,6 @@
 package com.doan.cv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "permissions")
@@ -36,6 +39,10 @@ public class Permission {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+
+    @ManyToMany(mappedBy = "permissions")
+    @JsonIgnoreProperties(value = {"permissions"})
+    private List<Role> roles = new ArrayList<>();
 
     @PrePersist
     void handleCreate() {

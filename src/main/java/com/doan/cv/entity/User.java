@@ -2,17 +2,13 @@ package com.doan.cv.entity;
 
 import com.doan.cv.constant.Gender;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.security.Principal;
-
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,15 +33,24 @@ public class User {
     private String updateBy;
 
     @ManyToOne
+    @JoinColumn(name="role_id")
+    private Role role;
+
+    @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
 
     @PrePersist
     void handleCreatedAt(){
-        this.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        this.setCreatedBy(getCurrentUsernameOrDefault());
     }
     @PreUpdate
     void handleUpdatedAt(){
-        this.setUpdateBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        this.setUpdateBy(getCurrentUsernameOrDefault());
+    }
+
+    private String getCurrentUsernameOrDefault() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        return (auth != null) ? auth.getName() : "system";
     }
 }

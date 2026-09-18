@@ -17,5 +17,15 @@ public class UserResponse {
     private int age;
     private Gender gender;
     private String address;
-    private String company;
+    private String companyName;
+    private UserRole userRole;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserRole{
+        private Long roleId;
+        private String roleName;
+    }
 }

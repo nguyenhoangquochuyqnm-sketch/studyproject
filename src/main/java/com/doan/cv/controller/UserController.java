@@ -7,6 +7,7 @@ import com.doan.cv.dto.response.ResultPagination;
 import com.doan.cv.dto.response.UserResponse;
 import com.doan.cv.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     @APImessage("fetch all users")

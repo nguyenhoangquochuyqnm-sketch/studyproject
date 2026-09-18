@@ -26,13 +26,9 @@ public class RoleService {
         if (this.roleRepository.existsByName(request.getName()))
             throw new DuplicateValueException("This role already existed");
 
-        List<Permission> permissions = null;
-
-        if ((request.getPermissions() != null)){
-            permissions = this.permissionRepository.findByPermissionIdIn(request.getPermissions().stream()
+        List<Permission> permissions = this.permissionRepository.findByPermissionIdIn(request.getPermissions().stream()
                                                                                        .map(Permission::getPermissionId)
                                                                                        .collect(Collectors.toList())   );
-        }
         request.setPermissions(permissions);
 
         return this.roleRepository.save(request);
@@ -69,14 +65,9 @@ public class RoleService {
         existingRole.setName(request.getName());
         existingRole.setDescription(request.getDescription());
 
-        List<Permission> permissions = null;
-
-        if (request.getPermissions() != null) {
-            permissions = this.permissionRepository.findByPermissionIdIn(request.getPermissions().stream()
+        List<Permission> permissions = this.permissionRepository.findByPermissionIdIn(request.getPermissions().stream()
                                                                                                  .map(Permission::getPermissionId)
-                                                                                                 .collect(Collectors.toList())
-            );
-        }
+                                                                                                 .collect(Collectors.toList()));
         existingRole.setPermissions(permissions);
 
         return this.roleRepository.save(existingRole);

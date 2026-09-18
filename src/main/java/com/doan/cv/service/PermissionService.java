@@ -69,4 +69,13 @@ public class PermissionService {
 
         return this.permissionRepository.save(existingPermission);
     }
+
+    public void deletePermission(Long id) {
+        Permission existingPermission = this.permissionRepository.findById(id)
+                                            .orElseThrow(() -> new InvalidValueException("permission not found with id: "+id));
+
+        existingPermission.getRoles().forEach(r -> r.getPermissions().remove(existingPermission));
+
+        this.permissionRepository.delete(existingPermission);
+    }
 }
